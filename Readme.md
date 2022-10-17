@@ -14,18 +14,18 @@ The idea is that users can keep their funds, for example, ETH or ERC20 tokens in
 **Severity:** Critical
 
 **Impact:** 
-An attacker could delete the implementation contract deployed for user proxy contracts. All users funds deposited to their proxy contracts could be stuck forever without any option to withdraw.
+An attacker could delete the `Implementation` contract deployed for user proxy contracts. All users funds deposited to their `Proxy` contracts could be stuck forever without any option to withdraw.
 
 **Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
 
-While reviewing the `Proxy` and `Implementation` smart contracts I have observed that `Implementation` contract is defined as a normal deployable smart contract, this allows an attacker to cause the DoS attack for all users of Proxy contract.
-By application business requirment users should have ability to execute arbitrary `call` and arbitrary `delegatecall` functions by using their `Implementation` contract, however the current implementation of this has a side affect.
+While reviewing the `Proxy` and `Implementation` smart contracts I have observed that `Implementation` contract is defined as a normal deployable smart contract, this allows an attacker to cause the denial of service (DoS) attack for all users of `Proxy` contract.
+By application business requirment users should have ability to execute arbitrary `call` and arbitrary `delegatecall` functions by using their `Implementation` contract, however the current architecture implementation has a side affect.
 
 The `delegatecall` function preserves the state of the calling smart contract, but executes logic of the called smart contract/library. In this architecture the `Implementation` smart contract is deployed as independent smart contract, what means that anyone within the Ethereum network could invoke their functions. 
 
 By deploying the malicious smart contract with a function, which defines `selfdestruct` operation, allows an attacker to "selfdelete" the `Implementation` contract. This may happen, because `Implementation.delegatecallContract` function uses `delegatecall` operation on the arbitrary address and arbitrary calldata. It will execute the logic of malicious function within the state of the `Implementation` contract, what means that the `selfdectruct` operation will be executed within the state of `Implementation` contract. 
 
-The denial of service attack is achieved, because there will be no way to update the implementation of Proxy contract or to withdraw the user funds. Upon deletion of `Implementation` contract, all users funds holded within Proxy contracts will be stuck there forever.
+The DoS attack is achieved, because there will be no way to update the address of `Implementation` of `Proxy` contract or to withdraw user funds. Upon deletion of `Implementation` contract, all users funds holded within Proxy contracts will be stuck there forever.
 
 The development and test running were completed with [Foundry](https://book.getfoundry.sh/) framework.
 
