@@ -133,7 +133,7 @@ Test result: ok. 1 passed; 0 failed; finished in 417.42µs
 
 
 **Recommendation:**
-Change the context of `Implementation` smart contract from contract to library. Update their functions by removing the `payable` 
+Change the context of `Implementation` smart contract from `contract` to `library`. Update their functions by removing the `payable` 
 modifier.
 
 ```diff
