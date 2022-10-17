@@ -25,7 +25,7 @@ The `delegatecall` function preserves the state of the calling smart contract, b
 
 By deploying the malicious smart contract with a function, which defines `selfdestruct` operation, allows an attacker to "selfdelete" the `Implementation` contract. This may happen, because `Implementation.delegatecallContract` function uses `delegatecall` operation on the arbitrary address and arbitrary calldata. It will execute the logic of malicious function within the state of the `Implementation` contract, what means that the `selfdectruct` operation will be executed within the state of `Implementation` contract. 
 
-The DoS attack is achieved, because there will be no way to update the address of `Implementation` of `Proxy` contract or to withdraw user funds. Upon deletion of `Implementation` contract, all users funds holded within Proxy contracts will be stuck there forever.
+The DoS attack could be achieved, because there is no way to update the address of `Implementation` of `Proxy` contract or to withdraw user funds. Upon deletion of `Implementation` contract, all users funds holded within `Proxy` contracts will be stuck there forever.
 
 The development and test running were completed with [Foundry](https://book.getfoundry.sh/) framework.
 
