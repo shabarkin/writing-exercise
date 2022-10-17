@@ -28,7 +28,7 @@ contract SpearbitImplementationDestructTest is Test {
         // send funds to deployer account
         (bool success,) = deployer.call{value: 1000 ether}("");
         if (!success){
-            revert("Not deposited funds")
+            revert("Not deposited funds");
         }
 
         // Exploit contract deployment
