@@ -26,7 +26,10 @@ contract SpearbitImplementationDestructTest is Test {
         proxy = new Proxy(address(impl), deployer);
 
         // send funds to deployer account
-        deployer.call{value: 1000 ether}("");
+        (bool success,) = deployer.call{value: 1000 ether}("");
+        if (!success){
+            revert("Not deposited funds")
+        }
 
         // Exploit contract deployment
         vm.startPrank(attacker);
