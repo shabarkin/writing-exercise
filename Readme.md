@@ -15,10 +15,11 @@ There is a **critical bug** in the wallet protocol. The exercise is to find it a
 
 **Severity:** Critical
 
-**Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
-
 **Impact:** 
 An attacker could delete the implementation contract deployed for user proxy contracts. All users funds deposited to their proxy contracts could be stuck forever without any option to withdraw.
+
+**Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
+
 
 **Recommendation:**
 Change the context of `Implementation` smart contract from contract to library. Update their functions by removing the `payable` 
