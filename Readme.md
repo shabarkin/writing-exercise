@@ -58,7 +58,7 @@ impl.delegatecallContract(address(exploit), _calldataExploit);
 vm.stopPrank();
  ```
  
-Example of the check to determine the existance of the contract:
+Example of the check to determine existance of a contract:
  ```solidity
  function _checkContractExistance(address _contract) private view returns (bool){
     uint256 size;
