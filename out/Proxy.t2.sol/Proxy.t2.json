@@ -1,0 +1,19 @@
+{
+  "abi": [],
+  "bytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "linkReferences": {}
+  },
+  "ast": {
+    "absolutePath": "test/Proxy.t2.sol",
+    "id": 23578,
+    "exportedSymbols": {},
+    "nodeType": "SourceUnit",
+    "src": "0:0:10"
+  },
+  "id": 10
+}
