@@ -9,7 +9,7 @@ You are given an implementation for a smart contract wallet. There are two contr
 
 The idea is that users can keep their funds, for example, ETH or ERC20 tokens in the Proxy. To use these funds, users can execute arbitrary calls and arbitrary delegatecalls by using the implementation contract (it has `callContract` and `delegatecallContract`). The implementation contract is deployed only once and reused to save gas.
 
-## Implementation deletion causes DoS of the user proxy contract
+## Implementation deletion causes DoS of users proxy contracts
 
 **Severity:** Critical
 
