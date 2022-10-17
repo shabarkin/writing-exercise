@@ -1,6 +1,6 @@
 # Spearbit Writing Exercise
 
-## Wallet Protocol
+## Wallet Protocol Business Requirments
 
 You are given an implementation for a smart contract wallet. There are two contracts
 
@@ -11,21 +11,12 @@ The idea is that users can keep their funds, for example, ETH or ERC20 tokens in
 
 There is a **critical bug** in the wallet protocol. The exercise is to find it and write it in markdown format, in accordance with the style guide.
 
-For simplicity, we expect 
+## Implementation deletion causes DoS of the user proxy contract
 
-```md
-## Short title for the issue
+**Severity:** Critical
 
-**Severity**: High / Medium / Low / Informational / Gas Optimisation
+**Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
 
-Context: [`File.sol#L123`](github.com/permalink)
+**Impact:** An attacker could delete the implementation contract deployed for user proxy contracts. All users funds deposited to their proxy contracts could be stuck forever without any option to withdraw.
 
-Description of the attack.
-
-**Recommendation**: Description on how to avoid the issue.
-```
-
-Reference: [Style guide for writing Spearbit reports](https://hackmd.io/@spearbit/S1T63tOqt).
-
-
-*Bonus*: There is simple, yet niche technique to avoid the critical issue by modifying `Implementation.sol`. Bonus point if you can include this in your recommendation. Another bonus point if your recommendation only requires changing a single word in `Implementation.sol` (and removing two more words).
+### Observation 
