@@ -18,7 +18,7 @@ An attacker could delete the implementation contract deployed for user proxy con
 
 **Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
 
-While reviewing the Proxy and Implementation smart contracts I have observed that Implementation contract is defined as a normal deployable smart contract, this allows an attacker to cause the DoS attack for all users of Proxy contract.
+While reviewing the `Proxy` and `Implementation` smart contracts I have observed that `Implementation` contract is defined as a normal deployable smart contract, this allows an attacker to cause the DoS attack for all users of Proxy contract.
 By application business requirment users should have ability to execute arbitrary `call` and arbitrary `delegatecall` functions by using their `Implementation` contract, however the current implementation of this has a side affect.
 
 The `delegatecall` function preserves the state of the calling smart contract, but executes logic of the called smart contract/library. In this architecture the `Implementation` smart contract is deployed as independent smart contract, what means that anyone within the Ethereum network could invoke their functions. 
